@@ -16,7 +16,7 @@
 - (pid_t)findAoVPID {
     // Dummy implementation for finding PID
     pid_t pid = 0;
-    find_game_pid("com.garena.game.kgvn", &pid);
+    find_process_by_bundle("com.garena.game.kgvn", &pid);
     return pid;
 }
 
