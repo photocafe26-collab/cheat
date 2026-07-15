@@ -1,0 +1,42 @@
+name: Build IPA
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build iOS IPA
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup Theos
+        run: |
+          brew install ldid xz
+          git clone --recursive https://github.com/theos/theos.git $THEOS
+        env:
+          THEOS: ${{ github.workspace }}/theos
+
+      - name: Build Application
+        run: |
+          make clean all
+          mkdir -p Payload
+          cp -r .theos/obj/debug/AovDarksword.app Payload/ || cp -r .theos/obj/AovDarksword.app Payload/
+          zip -r AovDarksword.ipa Payload
+        env:
+          THEOS: ${{ github.workspace }}/theos
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: AovDarksword.ipa
+          path: AovDarksword.ipa
