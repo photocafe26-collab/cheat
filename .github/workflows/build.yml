@@ -21,6 +21,7 @@ jobs:
 
       - name: Setup Theos
         run: |
+          export HOMEBREW_NO_REQUIRE_TAP_TRUST=1
           brew install ldid xz
           git clone --recursive https://github.com/theos/theos.git $THEOS
         env:
